@@ -7,7 +7,11 @@ const postSchema = new mongoose.Schema({
     dateCreated: {type: Date, default: Date.now},
     tags: {type: [String]},
     likes: {type: Number, default: 0},
-    comments: {type: [String], default: []}
+    comments: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Comment',
+        default: []
+    }
 }, {
     versionKey: false,
     toJSON: {
