@@ -9,7 +9,7 @@ const commentSchema = new mongoose.Schema({
 }, {
     versionKey: false, toJSON: {
         transform: (doc, ret) => {
-            const {_id, ...rest} = ret;
+            const {_id, postId, ...rest} = ret;
             return {...rest}
         }
     }
