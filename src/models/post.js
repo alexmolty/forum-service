@@ -1,15 +1,16 @@
-import mongoose from 'mongoose';
+import {Schema, Types, model} from 'mongoose';
+import commentSchema from "./comment.js";
 
-const postSchema = new mongoose.Schema({
+const postSchema = new Schema({
+    _id: { type: String, default: () => new Types.ObjectId().toHexString()},
     title: {type: String, required: true},
     content: {type: String, required: true},
     author: {type: String, required: true},
     dateCreated: {type: Date, default: Date.now},
-    tags: {type: [String]},
+    tags: {type: [String], default: []},
     likes: {type: Number, default: 0},
     comments: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'Comment',
+        type: [commentSchema],
         default: []
     }
 }, {
@@ -21,5 +22,5 @@ const postSchema = new mongoose.Schema({
         }
     }
 })
-const Post = mongoose.model('Post', postSchema, 'posts');
+const Post = model('Post', postSchema, 'posts');
 export default Post;

@@ -1,50 +1,65 @@
 import * as postRepo from '../repositories/post.repository.js'
 
+function ThrowErrorPostNotFound(id){
+    const error = new Error(`Post with id ${id} not found`)
+    error.statusCode = 404
+    throw error
+}
+
 class PostService {
     async createPost(author, data) {
         return await postRepo.createPost({...data, author});
     }
 
     async getPostById(id) {
-        return await postRepo.getPostById(id);
+        const post = await postRepo.getPostById(id)
+        if(!post) ThrowErrorPostNotFound(id)
+        return post
     }
 
-    async addLike(postID) {
-        // TODO add like to post
-        throw new Error('Not implemented')
+    async addLike(postId) {
+        const updated = await postRepo.addLike(postId)
+        if(!updated) ThrowErrorPostNotFound(postId)
+        return updated
     }
 
     async getPostsByAuthor(author) {
-        // TODO get posts by author
-        throw new Error('Not implemented')
+        return postRepo.getPostsByAuthor(author);
     }
 
     async addComment(postId, commenter, message) {
-        // TODO add comment to post
-        throw new Error('Not implemented')
+        const post = await postRepo.getPostById(postId)
+        if(!post) ThrowErrorPostNotFound(postId)
+        const comment = {user: commenter, message}
+        return await postRepo.addComment(postId, comment)
     }
 
     async deletePost(postId) {
-        // TODO delete post
-        throw new Error('Not implemented')
+        const post = await postRepo.deletePost(postId)
+        if(!post) ThrowErrorPostNotFound(postId)
+        return post
     }
 
     async findPostsByTags(tagsString) {
-        // TODO find post by tags. Tags example: python,java,j2ee
-        throw new Error('Not implemented')
+        const tagsArray = tagsString.split(',')
+        return await postRepo.findPostsByTags(tagsArray);
     }
 
     async findPostsByPeriod(dateFrom, dateTo) {
-        // TODO find post by period. Date format: YYYY-MM-DD
-        throw new Error('Not implemented')
+        const query = {}
+        if (dateFrom) query.$gte = new Date(dateFrom)
+        if (dateTo) {
+            const dateEndOfDay = new Date(dateTo)
+            dateEndOfDay.setHours(23,59,59,999)
+            query.$lte = new Date(dateEndOfDay)
+        }
+        return await postRepo.findPostsByPeriod(query)
     }
 
     async updatePost(postId, data) {
-        // TODO update post. Data example:
-        //      "title": "Jakarta EE",
-        //     "tags":["Jakarta EE", "J2EE"],
-        //     "content": "Java is the best for backend"
-        throw new Error('Not implemented')
+        const postUpdated = await postRepo.updatePost(postId, data)
+        if(!postUpdated) ThrowErrorPostNotFound(postId)
+        return postUpdated
     }
 }
 

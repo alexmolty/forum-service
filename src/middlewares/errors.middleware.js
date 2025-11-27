@@ -13,7 +13,7 @@ const errorsMiddleware = (err, req, res, next) => {
     }
     return res.status(statusCode).json({
         timestamp: new Date().toISOString(),
-        status: statusCode,
+        code: statusCode,
         error: statusText,
         message: err.message,
         path: req.path

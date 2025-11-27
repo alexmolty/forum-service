@@ -8,6 +8,14 @@ const app = express()
 app.use(express.json())
 
 app.use('/forum', postRoutes)
+
+// Catch-all for unknown routes
+app.use((req, res, next) => {
+    const err = new Error(`Route ${req.method} ${req.originalUrl} not found`);
+    err.statusCode = 404;
+    next(err);
+});
+
 app.use(errorsMiddleware)
 
 const connectDB = async () => {

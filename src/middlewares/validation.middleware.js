@@ -6,7 +6,13 @@ const schemas = {
             title: Joi.string().required(),
             content: Joi.string().required(),
             tags: Joi.array().items(Joi.string())
-        })
+        }),
+    updatePost: Joi.object(
+        {
+            title: Joi.string(),
+            tags: Joi.array().items(Joi.string())
+        }
+    )
 }
 const validate = schemaName => (req, res, next) => {
     const schema = schemas[schemaName];
