@@ -1,22 +1,6 @@
-import express from 'express'
 import mongoose from "mongoose";
-import config from "../src/config/config.js";
-import postRoutes from "./routes/post.routes.js";
-import errorsMiddleware from "./middlewares/errors.middleware.js";
-
-const app = express()
-app.use(express.json())
-
-app.use('/forum', postRoutes)
-
-// Catch-all for unknown routes
-app.use((req, res, next) => {
-    const err = new Error(`Route ${req.method} ${req.originalUrl} not found`);
-    err.statusCode = 404;
-    next(err);
-});
-
-app.use(errorsMiddleware)
+import config from "./config/config.js";
+import app from './app.js'
 
 const connectDB = async () => {
     try {
