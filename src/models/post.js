@@ -17,8 +17,12 @@ const postSchema = new Schema({
     versionKey: false,
     toJSON: {
         transform: (doc, ret) => {
-            const {_id, ...rest} = ret;
-            return {id: _id, ...rest}
+            const {_id, dateCreated,...rest} = ret;
+            return {
+                id: _id,
+                dateCreated: dateCreated.toISOString().slice(0, 19),
+                ...rest
+            }
         }
     }
 })

@@ -21,7 +21,7 @@ export function getPostsByAuthor(author) {
 }
 
 export function addComment(id, comment) {
-    return Post.findByIdAndUpdate(id, {$push: {comments: comment}}, {new: true, runValidators: true})
+    return Post.findByIdAndUpdate(id, {$push: {comments: comment}}, {new: true})
 }
 
 export function findPostsByTags(tags) {

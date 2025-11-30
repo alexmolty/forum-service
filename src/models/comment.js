@@ -10,8 +10,11 @@ const commentSchema = new mongoose.Schema({
     versionKey: false,
     toJSON: {
         transform: (doc, ret) => {
-            const {_id, postId, ...rest} = ret;
-            return {...rest}
+            const {dateCreated,...rest} = ret;
+            return {
+                dateCreated: dateCreated.toISOString().slice(0, 19),
+                ...rest
+            }
         }
     }
 })
