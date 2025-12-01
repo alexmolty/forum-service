@@ -5,8 +5,17 @@ const errorsMiddleware = (err, req, res, next) => {
         case 400:
             statusText = 'Bad request'
             break;
+        case 401:
+            statusText = 'Unauthorized'
+            break;
+        case 403:
+            statusText = 'Forbidden'
+            break;
         case 404:
             statusText = 'Not found'
+            break;
+        case 409:
+            statusText = 'Conflict'
             break;
         default:
             statusText = 'Internal server error'

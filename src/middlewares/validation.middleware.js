@@ -1,6 +1,7 @@
 import Joi from 'joi';
 
 const schemas = {
+    // POST ACTIONS
     createPost: Joi.object(
         {
             title: Joi.string().required(),
@@ -13,7 +14,7 @@ const schemas = {
             content: Joi.string(),
             tags: Joi.array().items(Joi.string())
         }
-    ),
+    ).min(1),
     addComment: Joi.object(
         {
             message: Joi.string().required()
@@ -24,7 +25,28 @@ const schemas = {
             dateFrom: Joi.date().iso(),
             dateTo: Joi.date().iso()
         }
-    )
+    ).min(1),
+    // USER ACTIONS
+    register: Joi.object({
+        login: Joi.string().required(),
+        password: Joi.string().required(),
+        firstName: Joi.string().required(),
+        lastName: Joi.string().required()
+    }),
+    deleteUser: Joi.object({login: Joi.string().required()}),
+    updateUser: Joi.object({
+        firstName: Joi.string(),
+        lastName: Joi.string(),
+    }).min(1),
+    addRole: Joi.object({
+        login: Joi.string().required(),
+        role: Joi.string().valid("USER", "ADMIN", "MODERATOR").insensitive().required()
+    }),
+    deleteRole: Joi.object({
+        login: Joi.string().required(),
+        role: Joi.string().valid("USER", "ADMIN", "MODERATOR").insensitive().required()
+    }),
+    getUser: Joi.object({login: Joi.string().required()})
 }
 const validate = (schemaName, target = 'body') => (req, res, next) => {
     const schema = schemas[schemaName];
