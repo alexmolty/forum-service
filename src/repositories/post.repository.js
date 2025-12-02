@@ -36,5 +36,5 @@ export function findPostsByPeriod(query) {
 }
 
 export function updatePost(id, data) {
-    return Post.findByIdAndUpdate(id, {$set: data}, {new: true})
+    return Post.findByIdAndUpdate(id, data, {new: true})
 }

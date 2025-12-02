@@ -8,6 +8,10 @@ function ThrowErrorPostNotFound(id){
 
 class PostService {
     async createPost(author, data) {
+        if(data.tags) {
+            const tagsLowerCase = data.tags.map(t => t.toLowerCase())
+            data.tags = tagsLowerCase
+        }
         return await postRepo.createPost({...data, author});
     }
 
@@ -57,9 +61,16 @@ class PostService {
     }
 
     async updatePost(postId, data) {
-        const postUpdated = await postRepo.updatePost(postId, data)
-        if(!postUpdated) ThrowErrorPostNotFound(postId)
-        return postUpdated
+        const post = await postRepo.getPostById(postId)
+        if(!post) ThrowErrorPostNotFound(postId)
+        const updateData = { ...data };
+        if(data.tags) {
+            const existing = post.tags.map(t => t.toLowerCase())
+            const incoming = data.tags.map(t => t.toLowerCase())
+            const merged = new Set([...existing, ...incoming]);
+            updateData.tags = [...merged];
+        }
+        return await postRepo.updatePost(postId, updateData)
     }
 }
 
