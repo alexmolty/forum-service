@@ -26,6 +26,12 @@ const schemas = {
             dateTo: Joi.date().iso()
         }
     ).min(1),
+    findPostsByTags: Joi.object({
+        values: Joi.alternatives().try(
+            Joi.array().items(Joi.string()),
+            Joi.string()
+        ).required()
+    }),
     // USER ACTIONS
     register: Joi.object({
         login: Joi.string().required(),

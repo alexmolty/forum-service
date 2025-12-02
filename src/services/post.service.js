@@ -44,9 +44,12 @@ class PostService {
         return post
     }
 
-    async findPostsByTags(tagsString) {
-        const tagsArray = tagsString.split(',')
-        return await postRepo.findPostsByTags(tagsArray);
+    async findPostsByTags(tags) {
+        if(typeof tags === 'string'){
+            tags = tags.split(',')
+        }
+        tags = tags.map(t => t.toLowerCase())
+        return await postRepo.findPostsByTags(tags);
     }
 
     async findPostsByPeriod(dateFrom, dateTo) {
