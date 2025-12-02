@@ -11,6 +11,6 @@ router.patch('/post/:id/like', postController.addLike)
 router.get('/posts/author/:author', postController.findPostsByAuthor)
 router.patch('/post/:id/comment/:commenter', validate('addComment'), postController.addComment)
 router.get('/posts/tags', validate('findPostsByTags', 'query'), postController.findPostsByTags)
-router.get('/posts/period', validate('dateFormat') ,postController.findPostsByPeriod)
+router.get('/posts/period', validate('dateFormat', 'query') ,postController.findPostsByPeriod)
 router.patch('/post/:id', validate('updatePost'), postController.updatePost)
 export default router;
