@@ -1,31 +1,21 @@
-const errorsMiddleware = (err, req, res, next) => {
-    const statusCode = err.statusCode || 500;
-    let statusText
-    switch (statusCode) {
-        case 400:
-            statusText = 'Bad request'
-            break;
-        case 401:
-            statusText = 'Unauthorized'
-            break;
-        case 403:
-            statusText = 'Forbidden'
-            break;
-        case 404:
-            statusText = 'Not found'
-            break;
-        case 409:
-            statusText = 'Conflict'
-            break;
-        default:
-            statusText = 'Internal server error'
+export default function errorsMiddleware(err, req, res, next) {
+    const status = err.status || err.statusCode || 500
+
+    const statusTexts = {
+        400: 'Bad request',
+        401: 'Unauthorized',
+        403: 'Forbidden',
+        404: 'Not found',
+        409: 'Conflict',
+        418: 'I\'m a teapot',
+        500: 'Internal server error'
     }
-    return res.status(statusCode).json({
+
+    res.status(status).json({
         timestamp: new Date().toISOString(),
-        code: statusCode,
-        error: statusText,
+        code: status,
+        error: statusTexts[status] || 'Internal server error',
         message: err.message,
-        path: req.path
+        path: req.originalUrl
     })
 }
-export default errorsMiddleware
