@@ -1,7 +1,7 @@
 import {Schema, Types, model} from 'mongoose';
-
+import bcrypt from 'bcrypt'
 const userSchema = new Schema({
-    _id: {type: String, required: true},
+    _id: {type: String, required: true, alias: 'login'},
     password: {type: String, required: true},
     firstName: {type: String, required: true},
     lastName: {type: String, required: true},
@@ -18,5 +18,13 @@ const userSchema = new Schema({
         }
     }
 })
+// mongoose middleware
+userSchema.pre('save', async function (next) {
+    if(this.isModified('password')) {
+        const salt = await bcrypt.genSalt(12);
+        this.password = await bcrypt.hash(this.password, salt);
+    }
+})
+
 const user = model('User', userSchema, 'users');
 export default user;

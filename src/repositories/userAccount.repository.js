@@ -1,36 +1,35 @@
 import User from "../models/user.js";
 
 class UserAccountRepository {
-    register(user) {
+    async register(user) {
         return User.create(user)
     }
 
-    getUser(login) {
+    async getUser(login) {
         return User.findById(login)
     }
 
-    deleteUser(login) {
+    async deleteUser(login) {
         return User.findOneAndDelete({_id: login})
     }
 
-    updateUser(login, data) {
+    async updateUser(login, data) {
         return User.findByIdAndUpdate(login, data, {new: true})
     }
 
-    addRole(login, role) {
+    async addRole(login, role) {
         return User.findByIdAndUpdate(login, {$addToSet: {roles: role}}, {new: true})
     }
 
-    deleteRole(login, role) {
+    async deleteRole(login, role) {
         return User.findByIdAndUpdate(login, {$pull: {roles: role}}, {new: true})
     }
 
-    login(login, password) {
-        // TODO (next lesson)
-    }
-
-    changePassword(login, newPassword) {
-        // TODO (next lesson)
+    async changePassword(login, newPassword) {
+        const user = await User.findById(login)
+        if (!user) return null
+        user.password = newPassword
+        return await user.save()
     }
 }
 

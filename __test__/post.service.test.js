@@ -107,10 +107,14 @@ describe('PostService unit tests', () => {
   })
 
   test('updatePost returns updated or throws 404', async () => {
+    // Success path: service first checks existence via getPostById, then calls update
+    repoMock.getPostById.mockResolvedValueOnce({_id: 'u1', tags: []})
     const upd = {_id: 'u1', title: 'T'}
     repoMock.updatePost.mockResolvedValueOnce(upd)
     await expect(postService.updatePost('u1', {title: 'T'})).resolves.toBe(upd)
-    repoMock.updatePost.mockResolvedValueOnce(null)
+
+    // Not found path: pre-check fails
+    repoMock.getPostById.mockResolvedValueOnce(null)
     await expect(postService.updatePost('u1', {title: 'T'})).rejects.toMatchObject({statusCode: 404})
   })
 })

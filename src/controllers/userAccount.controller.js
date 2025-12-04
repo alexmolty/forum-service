@@ -4,7 +4,7 @@ class UserAccountController {
     async register(req, res, next) {
         try {
             const user = await userAccountService.register(req.body);
-            return res.json(user);
+            return res.status(201).json(user);
         } catch (error) {
             return next(error)
         }
@@ -28,7 +28,7 @@ class UserAccountController {
     }
     async addRole(req, res, next) {
         try {
-            const user = await userAccountService.addRole(req.params.login, req.params.role);
+            const user = await userAccountService.changeRole(req.params.login, req.params.role, true);
             return res.json(user);
         } catch (error) {
             return next(error)
@@ -37,7 +37,7 @@ class UserAccountController {
 
     async deleteRole(req, res, next) {
         try {
-            const user = await userAccountService.deleteRole(req.params.login, req.params.role);
+            const user = await userAccountService.changeRole(req.params.login, req.params.role, false);
             return res.json(user);
         } catch (error) {
             return next(error)
