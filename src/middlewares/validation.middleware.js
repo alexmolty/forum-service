@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import {ADMIN, MODERATOR, USER} from "../config/constants.js";
 
 const schemas = {
     // POST ACTIONS
@@ -44,13 +45,9 @@ const schemas = {
         firstName: Joi.string(),
         lastName: Joi.string(),
     }).min(1),
-    addRole: Joi.object({
+    changeRole: Joi.object({
         login: Joi.string().required(),
-        role: Joi.string().valid("USER", "ADMIN", "MODERATOR").insensitive().required()
-    }),
-    deleteRole: Joi.object({
-        login: Joi.string().required(),
-        role: Joi.string().valid("USER", "ADMIN", "MODERATOR").insensitive().required()
+        role: Joi.string().valid(USER, ADMIN, MODERATOR).insensitive().required()
     }),
     getUser: Joi.object({login: Joi.string().required()})
 }

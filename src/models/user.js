@@ -1,11 +1,12 @@
 import {Schema, Types, model} from 'mongoose';
 import bcrypt from 'bcrypt'
+import {ALL_ROLES, USER} from "../config/constants.js";
 const userSchema = new Schema({
     _id: {type: String, required: true, alias: 'login'},
     password: {type: String, required: true},
     firstName: {type: String, required: true},
     lastName: {type: String, required: true},
-    roles: {type: [String], default: ["USER"], enum: ["USER", "ADMIN", "MODERATOR"]}
+    roles: {type: [String], default: [USER], enum: ALL_ROLES}
 }, {
     versionKey: false,
     toJSON: {
