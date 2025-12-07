@@ -2,12 +2,13 @@ import express from 'express'
 import postRoutes from './routes/post.routes.js'
 import userAccountRoutes from "./routes/userAccount.routes.js";
 import errorsMiddleware from './middlewares/errors.middleware.js'
+import authentication from "./middlewares/authentication.middleware.js";
 
 // Build and export an express app without side effects (no DB connection, no listen)
 const app = express()
 
 app.use(express.json())
-
+app.use(authentication)
 app.use('/forum', postRoutes)
 app.use('/account', userAccountRoutes)
 

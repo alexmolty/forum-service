@@ -26,6 +26,9 @@ userSchema.pre('save', async function (next) {
         this.password = await bcrypt.hash(this.password, salt);
     }
 })
+userSchema.methods.comparePassword = async function (plainTextPassword) {
+    return await bcrypt.compare(plainTextPassword, this.password);
+}
 
 const user = model('User', userSchema, 'users');
 export default user;
