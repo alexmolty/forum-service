@@ -49,7 +49,8 @@ const schemas = {
         login: Joi.string().required(),
         role: Joi.string().valid(USER, ADMIN, MODERATOR).insensitive().required()
     }),
-    getUser: Joi.object({login: Joi.string().required()})
+    getUser: Joi.object({login: Joi.string().required()}),
+    changePassword: Joi.object({password: Joi.string().required()}),
 }
 const validate = (schemaName, target = 'body') => (req, res, next) => {
     const schema = schemas[schemaName];

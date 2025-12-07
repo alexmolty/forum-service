@@ -11,6 +11,6 @@ router.delete('/user/:login', validate('deleteUser', 'params'), userAccountContr
 router.patch('/user/:login', validate('updateUser'),userAccountController.updateUser)
 router.patch('/user/:login/role/:role', validate('changeRole', 'params'),userAccountController.addRole)
 router.delete('/user/:login/role/:role', validate('changeRole', 'params'), userAccountController.deleteRole)
-router.patch('/password', userAccountController.changePassword)
+router.patch('/password', validate('changePassword'), userAccountController.changePassword)
 router.get('/user/:login', validate('getUser', 'params') ,userAccountController.getUser)
 export default router;

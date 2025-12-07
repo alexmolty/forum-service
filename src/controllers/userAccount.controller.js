@@ -53,11 +53,13 @@ class UserAccountController {
         }
     }
     async login(req, res, next) {
-        // TODO (next lesson)
+        const user = await userAccountService.getUser(req.principal.username);
+        return res.json(user);
     }
 
     async changePassword(req, res, next) {
-        // TODO (next lesson)
+        await userAccountService.changePassword(req.principal.username, req.body.password)
+        return res.sendStatus(204);
     }
 }
 export default new UserAccountController()
