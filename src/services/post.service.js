@@ -1,10 +1,5 @@
 import * as postRepo from '../repositories/post.repository.js'
-
-function ThrowErrorPostNotFound(id){
-    const error = new Error(`Post with id ${id} not found`)
-    error.statusCode = 404
-    throw error
-}
+import {HttpError} from "../config/HttpError.js";
 
 class PostService {
     async createPost(author, data) {
@@ -17,13 +12,13 @@ class PostService {
 
     async getPostById(id) {
         const post = await postRepo.getPostById(id)
-        if(!post) ThrowErrorPostNotFound(id)
+        if(!post) throw new HttpError(`Post with id ${id} not found`, 404)
         return post
     }
 
     async addLike(postId) {
         const updated = await postRepo.addLike(postId)
-        if(!updated) ThrowErrorPostNotFound(postId)
+        if(!updated) throw new HttpError(`Post with id ${postId} not found`, 404)
         return updated
     }
 
@@ -33,14 +28,14 @@ class PostService {
 
     async addComment(postId, commenter, message) {
         const post = await postRepo.getPostById(postId)
-        if(!post) ThrowErrorPostNotFound(postId)
+        if(!post) throw new HttpError(`Post with id ${postId} not found`, 404)
         const comment = {user: commenter, message}
         return await postRepo.addComment(postId, comment)
     }
 
     async deletePost(postId) {
         const post = await postRepo.deletePost(postId)
-        if(!post) ThrowErrorPostNotFound(postId)
+        if(!post) throw new HttpError(`Post with id ${postId} not found`, 404)
         return post
     }
 
@@ -65,7 +60,7 @@ class PostService {
 
     async updatePost(postId, data) {
         const post = await postRepo.getPostById(postId)
-        if(!post) ThrowErrorPostNotFound(postId)
+        if(!post) throw new HttpError(`Post with id ${postId} not found`, 404)
         const updateData = { ...data };
         if(data.tags) {
             const existing = post.tags.map(t => t.toLowerCase())

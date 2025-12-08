@@ -1,5 +1,5 @@
 export default function errorsMiddleware(err, req, res, next) {
-    const status = err.status || err.statusCode || 500
+    const status = err.statusCode || 500
 
     const statusTexts = {
         400: 'Bad request',

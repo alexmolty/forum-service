@@ -7,8 +7,8 @@ export async function createAdmin() {
         admin = new User({
             login: 'admin',
             password: 'admin',
-            firstName: 'Adminis',
-            lastName: 'Trator',
+            firstName: 'admin',
+            lastName: 'admin',
             roles: ALL_ROLES
         })
         await admin.save();

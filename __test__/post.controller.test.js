@@ -22,8 +22,8 @@ jest.unstable_mockModule('../src/services/post.service.js', () => ({
 const {default: postController} = await import('../src/controllers/post.controller.js')
 
 // Helpers to build mock req/res/next
-function createReq({params = {}, body = {}, query = {}} = {}) {
-  return {params, body, query}
+function createReq({params = {}, body = {}, query = {}, principal} = {}) {
+  return {params, body, query, principal: principal ?? {username: params.author || params.commenter || 'Alex', roles: []}}
 }
 
 function createRes() {
@@ -44,7 +44,7 @@ describe('PostController unit tests', () => {
   })
 
   test('createPost → 201 and body on success', async () => {
-    const req = createReq({params: {author: 'Alex'}, body: {title: 't', content: 'c'}})
+    const req = createReq({params: {author: 'Alex'}, body: {title: 't', content: 'c'}, principal: {username: 'Alex', roles: []}})
     const res = createRes()
     const next = createNext()
     const created = {_id: '1', title: 't', content: 'c', author: 'Alex'}
@@ -59,7 +59,7 @@ describe('PostController unit tests', () => {
   })
 
   test('createPost → calls next(error) on service error', async () => {
-    const req = createReq({params: {author: 'Alex'}, body: {title: 't'}})
+    const req = createReq({params: {author: 'Alex'}, body: {title: 't'}, principal: {username: 'Alex', roles: []}})
     const res = createRes()
     const next = createNext()
     const err = Object.assign(new Error('Bad request'), {statusCode: 400})
@@ -97,10 +97,12 @@ describe('PostController unit tests', () => {
   })
 
   test('deletePost → 200 with deleted doc', async () => {
-    const req = createReq({params: {id: 'd1'}})
+    const req = createReq({params: {id: 'd1'}, principal: {username: 'Alex', roles: []}})
     const res = createRes()
     const next = createNext()
     const deleted = {_id: 'd1'}
+    // owner check needs original post author
+    serviceMock.getPostById.mockResolvedValueOnce({author: 'Alex'})
     serviceMock.deletePost.mockResolvedValueOnce(deleted)
 
     await postController.deletePost(req, res, next)
@@ -131,7 +133,7 @@ describe('PostController unit tests', () => {
   })
 
   test('addComment → 200 with updated', async () => {
-    const req = createReq({params: {id: 'p1', commenter: 'john'}, body: {message: 'hi'}})
+    const req = createReq({params: {id: 'p1', commenter: 'john'}, body: {message: 'hi'}, principal: {username: 'john', roles: []}})
     const res = createRes()
     const next = createNext()
     const updated = {_id: 'p1', comments: [{user: 'john', message: 'hi'}]}
@@ -167,10 +169,12 @@ describe('PostController unit tests', () => {
   })
 
   test('updatePost → 200 with updated doc', async () => {
-    const req = createReq({params: {id: 'u1'}, body: {title: 'T'}})
+    const req = createReq({params: {id: 'u1'}, body: {title: 'T'}, principal: {username: 'Alex', roles: []}})
     const res = createRes()
     const next = createNext()
     const updated = {_id: 'u1', title: 'T'}
+    // owner check: mock the fetched post author
+    serviceMock.getPostById.mockResolvedValueOnce({author: 'Alex'})
     serviceMock.updatePost.mockResolvedValueOnce(updated)
 
     await postController.updatePost(req, res, next)
