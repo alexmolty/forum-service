@@ -4,7 +4,7 @@ import {HttpError} from "../config/HttpError.js";
 class UserAccountService {
     async register(user) {
         const userExists = await userAccountRepository.getUser(user.login)
-        if (userExists) throw new HttpError(`User ${user} already exists`, 409)
+        if (userExists) throw new HttpError(`User ${user.login} already exists`, 409)
         return await userAccountRepository.register(user)
     }
 

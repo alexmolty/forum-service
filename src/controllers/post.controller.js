@@ -1,11 +1,7 @@
 import postService from "../services/post.service.js";
-import {HttpError} from "../config/HttpError.js";
 
 class PostController {
     async createPost(req, res, next) {
-        if(req.principal.username !== req.params.author) {
-            throw new HttpError('Not the owner', 403)
-        }
         try {
             const post = await postService.createPost(req.params.author, req.body)
             return res.status(201).json(post)
@@ -24,17 +20,13 @@ class PostController {
     }
 
     async deletePost(req, res, next) {
-        const post = await postService.getPostById(req.params.id)
-        if (req.principal.username === post.author || req.principal.roles.includes('MODERATOR')) {
-            try {
-                const postDeleted = await postService.deletePost(req.params.id)
-                return res.json(postDeleted)
-            } catch (error) {
-                return next(error)
-            }
-        } else {
-            throw new HttpError('Not the owner', 403)
+        try {
+            const postDeleted = await postService.deletePost(req.params.id)
+            return res.json(postDeleted)
+        } catch (error) {
+            return next(error)
         }
+
     }
 
     async addLike(req, res, next) {
@@ -56,9 +48,6 @@ class PostController {
     }
 
     async addComment(req, res, next) {
-        if(req.principal.username !== req.params.commenter) {
-            throw new HttpError('Not the owner', 403)
-        }
         try {
             const comment = await postService.addComment(req.params.id, req.params.commenter, req.body.message)
             return res.json(comment)
@@ -86,10 +75,6 @@ class PostController {
     }
 
     async updatePost(req, res, next) {
-        const post = await postService.getPostById(req.params.id)
-        if (req.principal.username !== post.author) {
-            throw new HttpError('Not the owner', 403)
-        }
         try {
             const postUpdated = await postService.updatePost(req.params.id, req.body)
             return res.json(postUpdated)
