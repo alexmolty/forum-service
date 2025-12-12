@@ -5,16 +5,16 @@ import errorsMiddleware from './middlewares/errors.middleware.js'
 import authentication from "./middlewares/authentication.middleware.js";
 import authorization from "./middlewares/authorization.middleware.js";
 import {ADMIN, MODERATOR} from "./config/constants.js";
-
+import corsMiddleware from "./config/cors.js";
 const app = express()
 const authRouter = Router();
 
+app.use(corsMiddleware);
 app.use(express.json())
 app.use(authentication)
 
 authRouter.all('/account/user/:login/role/:role', authorization.hasRole(ADMIN))
 authRouter.patch(['/account/user/:login', '/forum/post/:id/comment/:login'], authorization.isOwner('login'))
-// authRouter.patch('/forum/post/:id/comment/:author', authorization.isOwner('author'))
 authRouter.delete('/account/user/:login', authorization.isOwnerOrHasRole('login', ADMIN))
 authRouter.post('/forum/post/:author', authorization.isOwner('author'))
 authRouter.delete('/forum/post/:id', authorization.isPostAuthorOrHasRole('id', MODERATOR))
